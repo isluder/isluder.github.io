@@ -33,7 +33,7 @@ const config = {
   minimumTimeBetweenBrains: 250,
   minimumDistanceBetweenBrains: 75,
   colors: ["249 146 253", "252 254 255"],
-  sizes: ["1.4rem", "1rem", "0.6rem"],
+  sizes: ["2.5rem", "2rem", "1.5rem"],
   animations: ["fall-1", "fall-2", "fall-3"]
 }
 
