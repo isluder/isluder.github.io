@@ -1,0 +1,15 @@
+/* Remove conflicting styles and keep only what's needed */
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+
+/* Remove the section styling that conflicts with Bootstrap */
+/* The original section styles were overriding Bootstrap's layout */
+
+/* Keep footer styling if you add a footer later */
+footer {
+  text-align: center;
+  font-size: 0.8em;
+  color: #777;
+}
