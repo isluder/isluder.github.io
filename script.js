@@ -84,18 +84,18 @@ const createStar = position => {
   removeElement(star, config.starAnimationDuration);
 }
 
-// const createGlowPoint = position => {
-//   const glow = document.createElement("div");
+const createGlowPoint = position => {
+  const glow = document.createElement("div");
   
-//   glow.className = "glow-point";
+  glow.className = "glow-point";
   
-//   glow.style.left = px(position.x);
-//   glow.style.top = px(position.y);
+  glow.style.left = px(position.x);
+  glow.style.top = px(position.y);
   
-//   appendElement(glow)
+  appendElement(glow)
   
-//   removeElement(glow, config.glowDuration);
-// }
+  removeElement(glow, config.glowDuration);
+}
 
 const determinePointQuantity = distance => Math.max(
   Math.floor(distance / config.maximumGlowPointSpacing),
@@ -121,20 +121,20 @@ The "quantity" of points is based on the config property "maximumGlowPointSpacin
 My best explanation for why this is happening is due to the mousemove event only firing every so often. I also don't think this fix was totally necessary, but it annoyed me that it was happening so I took on the challenge of trying to fix it.
 
 -- */
-// const createGlow = (last, current) => {
-//   const distance = calcDistance(last, current),
-//         quantity = determinePointQuantity(distance);
+const createGlow = (last, current) => {
+  const distance = calcDistance(last, current),
+        quantity = determinePointQuantity(distance);
   
-//   const dx = (current.x - last.x) / quantity,
-//         dy = (current.y - last.y) / quantity;
+  const dx = (current.x - last.x) / quantity,
+        dy = (current.y - last.y) / quantity;
   
-//   Array.from(Array(quantity)).forEach((_, index) => { 
-//     const x = last.x + dx * index, 
-//           y = last.y + dy * index;
+  Array.from(Array(quantity)).forEach((_, index) => { 
+    const x = last.x + dx * index, 
+          y = last.y + dy * index;
     
-//     createGlowPoint({ x, y });
-//   });
-// }
+    createGlowPoint({ x, y });
+  });
+}
 
 const updateLastStar = position => {
   last.starTimestamp = new Date().getTime();
@@ -165,7 +165,7 @@ const handleOnMove = e => {
     updateLastStar(mousePosition);
   }
   
-//   createGlow(last.mousePosition, mousePosition);
+  createGlow(last.mousePosition, mousePosition);
   
   updateLastMousePosition(mousePosition);
 }
