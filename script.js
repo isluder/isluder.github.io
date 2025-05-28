@@ -77,7 +77,7 @@ const createStar = position => {
   star.style.color = `rgb(${color})`;
   star.style.textShadow = `0px 0px 1.5rem rgb(${color} / 0.5)`;
   star.style.animationName = config.animations[count++ % 3];
-  star.style.starAnimationDuration = ms(config.starAnimationDuration);
+  star.style.animationDuration = ms(config.starAnimationDuration); // Fixed: was "starAnimationDuration"
   
   appendElement(star);
 
