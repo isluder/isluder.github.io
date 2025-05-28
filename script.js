@@ -23,15 +23,15 @@ let start = new Date().getTime();
 const originPosition = { x: 0, y: 0 };
 
 const last = {
-  starTimestamp: start,
-  starPosition: originPosition,
+  BrainTimestamp: start,
+  BrainPosition: originPosition,
   mousePosition: originPosition
 }
 
 const config = {
-  starAnimationDuration: 1500,
-  minimumTimeBetweenStars: 250,
-  minimumDistanceBetweenStars: 75,
+  BrainAnimationDuration: 1500,
+  minimumTimeBetweenBrains: 250,
+  minimumDistanceBetweenBrains: 75,
   colors: ["249 146 253", "252 254 255"],
   sizes: ["1.4rem", "1rem", "0.6rem"],
   animations: ["fall-1", "fall-2", "fall-3"]
@@ -60,33 +60,33 @@ const removeElement = (element, delay) => setTimeout(() => {
   }
 }, delay);
 
-// Updated createStar function with brain emoji
-const createStar = position => {
-  const star = document.createElement("span");
+// Updated createBrain function with brain emoji
+const createBrain = position => {
+  const brain = document.createElement("span");
   const color = selectRandom(config.colors);
   
   // Use brain emoji 🧠
-  star.innerHTML = "🧠";
-  star.className = "star";
+  brain.innerHTML = "🧠";
+  brain.className = "brain";
   
-  star.style.position = "fixed";
-  star.style.left = px(position.x);
-  star.style.top = px(position.y);
-  star.style.fontSize = selectRandom(config.sizes);
-  star.style.color = `rgb(${color})`;
-  star.style.textShadow = `0px 0px 1.5rem rgb(${color} / 0.5)`;
-  star.style.animationName = config.animations[count++ % 3];
-  star.style.animationDuration = ms(config.starAnimationDuration);
-  star.style.pointerEvents = "none";
-  star.style.zIndex = "9999";
+  brain.style.position = "fixed";
+  brain.style.left = px(position.x);
+  brain.style.top = px(position.y);
+  brain.style.fontSize = selectRandom(config.sizes);
+  // brain.style.color = `rgb(${color})`;
+  brain.style.textShadow = `0px 0px 1.5rem rgb(${color} / 0.5)`;
+  brain.style.animationName = config.animations[count++ % 3];
+  brain.style.animationDuration = ms(config.BrainAnimationDuration);
+  brain.style.pointerEvents = "none";
+  brain.style.zIndex = "9999";
   
-  appendElement(star);
-  removeElement(star, config.starAnimationDuration);
+  appendElement(brain);
+  removeElement(brain, config.BrainAnimationDuration);
 }
 
-const updateLastStar = position => {
-  last.starTimestamp = new Date().getTime();
-  last.starPosition = position;
+const updateLastBrain = position => {
+  last.BrainTimestamp = new Date().getTime();
+  last.BrainPosition = position;
 }
 
 const updateLastMousePosition = position => last.mousePosition = position;
@@ -103,12 +103,12 @@ const handleOnMove = e => {
   adjustLastMousePosition(mousePosition);
   
   const now = new Date().getTime();
-  const hasMovedFarEnough = calcDistance(last.starPosition, mousePosition) >= config.minimumDistanceBetweenStars;
-  const hasBeenLongEnough = calcElapsedTime(last.starTimestamp, now) > config.minimumTimeBetweenStars;
+  const hasMovedFarEnough = calcDistance(last.BrainPosition, mousePosition) >= config.minimumDistanceBetweenBrains;
+  const hasBeenLongEnough = calcElapsedTime(last.BrainTimestamp, now) > config.minimumTimeBetweenBrains;
   
   if(hasMovedFarEnough || hasBeenLongEnough) {
-    createStar(mousePosition);
-    updateLastStar(mousePosition);
+    createBrain(mousePosition);
+    updateLastBrain(mousePosition);
   }
   
   updateLastMousePosition(mousePosition);
