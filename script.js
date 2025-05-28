@@ -1,28 +1,23 @@
 const projects = [
   { title: "Socket Sorting Robot for Robotics Course Project", link: "https://github.com/isluder/Socket-sorting-robot-mece-444" },
   { title: "Exploring the Market of Laptops through pricing and performance testing", link: "https://github.com/isluder/Exploring-the-Market-of-Laptops-through-Pricing-and-Performance-Testing" },
-  // Add more projects here
 ];
 
 // Wait for DOM to be ready
 document.addEventListener('DOMContentLoaded', function() {
   const container = document.getElementById("project-list");
   
-  // Check if container exists before trying to use it
   if (container) {
     projects.forEach(p => {
       const div = document.createElement("div");
-      div.className = "mb-3"; // Add Bootstrap margin class
+      div.className = "mb-3";
       div.innerHTML = `<h4><a href="${p.link}" target="_blank" rel="noopener noreferrer">${p.title}</a></h4>`;
       container.appendChild(div);
     });
   }
 });
 
-window.onmousemove = e => {
-
-}
-
+// Simplified cursor effect for debugging
 let start = new Date().getTime();
 
 const originPosition = { x: 0, y: 0 };
@@ -46,41 +41,48 @@ const config = {
 
 let count = 0;
   
-const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min,
-      selectRandom = items => items[rand(0, items.length - 1)];
-
-const withUnit = (value, unit) => `${value}${unit}`,
-      px = value => withUnit(value, "px"),
-      ms = value => withUnit(value, "ms");
+const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+const selectRandom = items => items[rand(0, items.length - 1)];
+const withUnit = (value, unit) => `${value}${unit}`;
+const px = value => withUnit(value, "px");
+const ms = value => withUnit(value, "ms");
 
 const calcDistance = (a, b) => {
-  const diffX = b.x - a.x,
-        diffY = b.y - a.y;
-  
+  const diffX = b.x - a.x;
+  const diffY = b.y - a.y;
   return Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
 }
 
 const calcElapsedTime = (start, end) => end - start;
 
-const appendElement = element => document.body.appendChild(element),
-      removeElement = (element, delay) => setTimeout(() => document.body.removeChild(element), delay);
+const appendElement = element => document.body.appendChild(element);
+const removeElement = (element, delay) => setTimeout(() => {
+  if (element && element.parentNode) {
+    document.body.removeChild(element);
+  }
+}, delay);
 
+// Updated createStar function with better fallback
 const createStar = position => {
-  const star = document.createElement("span"),
-        color = selectRandom(config.colors);
+  const star = document.createElement("span");
+  const color = selectRandom(config.colors);
   
-  star.className = "star fa-solid fa-sparkle";
+  // Use ✨ as fallback if Font Awesome doesn't work
+  star.innerHTML = "✨";
+  star.className = "star";
   
+  star.style.position = "fixed"; // Changed to fixed
   star.style.left = px(position.x);
   star.style.top = px(position.y);
   star.style.fontSize = selectRandom(config.sizes);
   star.style.color = `rgb(${color})`;
   star.style.textShadow = `0px 0px 1.5rem rgb(${color} / 0.5)`;
   star.style.animationName = config.animations[count++ % 3];
-  star.style.animationDuration = ms(config.starAnimationDuration); // Fixed: was "starAnimationDuration"
+  star.style.animationDuration = ms(config.starAnimationDuration);
+  star.style.pointerEvents = "none";
+  star.style.zIndex = "9999";
   
   appendElement(star);
-
   removeElement(star, config.starAnimationDuration);
 }
 
@@ -88,12 +90,11 @@ const createGlowPoint = position => {
   const glow = document.createElement("div");
   
   glow.className = "glow-point";
-  
+  glow.style.position = "fixed"; // Changed to fixed
   glow.style.left = px(position.x);
   glow.style.top = px(position.y);
   
-  appendElement(glow)
-  
+  appendElement(glow);
   removeElement(glow, config.glowDuration);
 }
 
@@ -102,35 +103,16 @@ const determinePointQuantity = distance => Math.max(
   1
 );
 
-/* --  
-
-The following is an explanation for the "createGlow" function below:
-
-I didn't cover this in my video, but I ran into an issue where moving the mouse really quickly caused gaps in the glow effect. Kind of like this:
-
-*   *       *       *    *      *    🖱️
-
-instead of:
-
-*************************************🖱️
-
-To solve this I sort of "backfilled" some additional glow points by evenly spacing them in between the current point and the last one. I found this approach to be more visually pleasing than one glow point spanning the whole gap.
-
-The "quantity" of points is based on the config property "maximumGlowPointSpacing".
-
-My best explanation for why this is happening is due to the mousemove event only firing every so often. I also don't think this fix was totally necessary, but it annoyed me that it was happening so I took on the challenge of trying to fix it.
-
--- */
 const createGlow = (last, current) => {
-  const distance = calcDistance(last, current),
-        quantity = determinePointQuantity(distance);
+  const distance = calcDistance(last, current);
+  const quantity = determinePointQuantity(distance);
   
-  const dx = (current.x - last.x) / quantity,
-        dy = (current.y - last.y) / quantity;
+  const dx = (current.x - last.x) / quantity;
+  const dy = (current.y - last.y) / quantity;
   
   Array.from(Array(quantity)).forEach((_, index) => { 
-    const x = last.x + dx * index, 
-          y = last.y + dy * index;
+    const x = last.x + dx * index;
+    const y = last.y + dy * index;
     
     createGlowPoint({ x, y });
   });
@@ -138,7 +120,6 @@ const createGlow = (last, current) => {
 
 const updateLastStar = position => {
   last.starTimestamp = new Date().getTime();
-
   last.starPosition = position;
 }
 
@@ -151,27 +132,23 @@ const adjustLastMousePosition = position => {
 };
 
 const handleOnMove = e => {
-  const mousePosition = { x: e.clientX, y: e.clientY }
+  const mousePosition = { x: e.clientX, y: e.clientY };
   
   adjustLastMousePosition(mousePosition);
   
-  const now = new Date().getTime(),
-        hasMovedFarEnough = calcDistance(last.starPosition, mousePosition) >= config.minimumDistanceBetweenStars,
-        hasBeenLongEnough = calcElapsedTime(last.starTimestamp, now) > config.minimumTimeBetweenStars;
+  const now = new Date().getTime();
+  const hasMovedFarEnough = calcDistance(last.starPosition, mousePosition) >= config.minimumDistanceBetweenStars;
+  const hasBeenLongEnough = calcElapsedTime(last.starTimestamp, now) > config.minimumTimeBetweenStars;
   
   if(hasMovedFarEnough || hasBeenLongEnough) {
     createStar(mousePosition);
-    
     updateLastStar(mousePosition);
   }
   
   createGlow(last.mousePosition, mousePosition);
-  
   updateLastMousePosition(mousePosition);
 }
 
 window.onmousemove = e => handleOnMove(e);
-
 window.ontouchmove = e => handleOnMove(e.touches[0]);
-
 document.body.onmouseleave = () => updateLastMousePosition(originPosition);
