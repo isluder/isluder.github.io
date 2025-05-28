@@ -1,32 +1,12 @@
-:root {
-  --glow-rgb: 239 42 201;
-}
-
-/* Remove conflicting styles and keep only what's needed */
 body {
   font-family: Arial, sans-serif;
   line-height: 1.6;
 }
 
-/* Remove the section styling that conflicts with Bootstrap */
-/* The original section styles were overriding Bootstrap's layout */
-
-/* body {
-  background: linear-gradient(145deg, rgb(119, 46, 195), rgb(58, 18, 153));
-  height: 100vh;
-  overflow: hidden;
-} */
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-}
-
-.glow-point {
-  position: absolute;
-  box-shadow: 0rem 0rem 1.2rem 0.6rem rgb(var(--glow-rgb));
-  pointer-events: none;
 }
 
 .star {

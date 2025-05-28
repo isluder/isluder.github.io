@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-// Simplified cursor effect for debugging
+// Brain cursor effect
 let start = new Date().getTime();
 
 const originPosition = { x: 0, y: 0 };
@@ -32,8 +32,6 @@ const config = {
   starAnimationDuration: 1500,
   minimumTimeBetweenStars: 250,
   minimumDistanceBetweenStars: 75,
-  glowDuration: 75,
-  maximumGlowPointSpacing: 10,
   colors: ["249 146 253", "252 254 255"],
   sizes: ["1.4rem", "1rem", "0.6rem"],
   animations: ["fall-1", "fall-2", "fall-3"]
@@ -62,16 +60,16 @@ const removeElement = (element, delay) => setTimeout(() => {
   }
 }, delay);
 
-// Updated createStar function with better fallback
+// Updated createStar function with brain emoji
 const createStar = position => {
   const star = document.createElement("span");
   const color = selectRandom(config.colors);
   
-  // Use ✨ as fallback if Font Awesome doesn't work
-  star.innerHTML = "✨";
+  // Use brain emoji 🧠
+  star.innerHTML = "🧠";
   star.className = "star";
   
-  star.style.position = "fixed"; // Changed to fixed
+  star.style.position = "fixed";
   star.style.left = px(position.x);
   star.style.top = px(position.y);
   star.style.fontSize = selectRandom(config.sizes);
@@ -84,38 +82,6 @@ const createStar = position => {
   
   appendElement(star);
   removeElement(star, config.starAnimationDuration);
-}
-
-const createGlowPoint = position => {
-  const glow = document.createElement("div");
-  
-  glow.className = "glow-point";
-  glow.style.position = "fixed"; // Changed to fixed
-  glow.style.left = px(position.x);
-  glow.style.top = px(position.y);
-  
-  appendElement(glow);
-  removeElement(glow, config.glowDuration);
-}
-
-const determinePointQuantity = distance => Math.max(
-  Math.floor(distance / config.maximumGlowPointSpacing),
-  1
-);
-
-const createGlow = (last, current) => {
-  const distance = calcDistance(last, current);
-  const quantity = determinePointQuantity(distance);
-  
-  const dx = (current.x - last.x) / quantity;
-  const dy = (current.y - last.y) / quantity;
-  
-  Array.from(Array(quantity)).forEach((_, index) => { 
-    const x = last.x + dx * index;
-    const y = last.y + dy * index;
-    
-    createGlowPoint({ x, y });
-  });
 }
 
 const updateLastStar = position => {
@@ -145,7 +111,6 @@ const handleOnMove = e => {
     updateLastStar(mousePosition);
   }
   
-  createGlow(last.mousePosition, mousePosition);
   updateLastMousePosition(mousePosition);
 }
 
