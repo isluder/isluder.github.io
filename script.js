@@ -133,19 +133,21 @@ const adjustLastMousePosition = position => {
 };
 
 const handleOnMove = e => {
+  if (!testtubesEnabled) return;
+
   const mousePosition = { x: e.clientX, y: e.clientY };
-  
+
   adjustLastMousePosition(mousePosition);
-  
+
   const now = new Date().getTime();
   const hasMovedFarEnough = calcDistance(last.testtubePosition, mousePosition) >= config.minimumDistanceBetweenTesttubes;
   const hasBeenLongEnough = calcElapsedTime(last.testtubeTimestamp, now) > config.minimumTimeBetweenTesttubes;
-  
+
   if(hasMovedFarEnough || hasBeenLongEnough) {
     createTesttube(mousePosition);
     updateLastTesttube(mousePosition);
   }
-  
+
   updateLastMousePosition(mousePosition);
 }
 
@@ -159,9 +161,13 @@ document.addEventListener('DOMContentLoaded', function() {
   if (toggleButton) {
     toggleButton.addEventListener('click', function() {
       testtubesEnabled = !testtubesEnabled;
-      toggleButton.textContent = testtubesEnabled ? 'Disable Test Tubes' : 'Enable Test Tubes';
-      toggleButton.classList.toggle('btn-outline-light');
-      toggleButton.classList.toggle('btn-light');
+      if (testtubesEnabled) {
+        toggleButton.classList.remove('inactive');
+        toggleButton.classList.add('active');
+      } else {
+        toggleButton.classList.remove('active');
+        toggleButton.classList.add('inactive');
+      }
     });
   }
 });

@@ -123,6 +123,36 @@ body {
   }
 }
 
+/* Floating Toggle Button */
+.floating-toggle-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1000;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.floating-toggle-btn:hover {
+  transform: scale(1.1);
+}
+
+.floating-toggle-btn.active {
+  background-color: #28a745; /* Green when enabled */
+  color: white;
+}
+
+.floating-toggle-btn.inactive {
+  background-color: #6c757d; /* Grey when disabled */
+  color: white;
+}
+
 /* Keep footer styling if you add a footer later */
 footer {
   text-align: center;
