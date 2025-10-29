@@ -155,12 +155,31 @@ window.onmousemove = e => handleOnMove(e);
 window.ontouchmove = e => handleOnMove(e.touches[0]);
 document.body.onmouseleave = () => updateLastMousePosition(originPosition);
 
-// Toggle test tube effect
+// Toggle test tube effect with localStorage persistence
 document.addEventListener('DOMContentLoaded', function() {
   const toggleButton = document.getElementById('toggle-testtube');
+  
+  // Load state from localStorage
+  const savedState = localStorage.getItem('testtubesEnabled');
+  if (savedState !== null) {
+    testtubesEnabled = JSON.parse(savedState);
+  }
+  
+  // Apply saved state to button
   if (toggleButton) {
+    if (testtubesEnabled) {
+      toggleButton.classList.remove('inactive');
+      toggleButton.classList.add('active');
+    } else {
+      toggleButton.classList.remove('active');
+      toggleButton.classList.add('inactive');
+    }
+    
     toggleButton.addEventListener('click', function() {
       testtubesEnabled = !testtubesEnabled;
+      // Save state to localStorage
+      localStorage.setItem('testtubesEnabled', JSON.stringify(testtubesEnabled));
+      
       if (testtubesEnabled) {
         toggleButton.classList.remove('inactive');
         toggleButton.classList.add('active');
