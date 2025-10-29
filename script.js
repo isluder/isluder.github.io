@@ -1,16 +1,16 @@
 const projects = [
   { 
     title: "Socket Sorting Robot",
-    description: "Developed a robotic system for automated socket sorting as part of the Robotics Course Project. Implemented computer vision and mechanical design principles.",
+    description: "Developed a robotic system for automated socket sorting as part of the Robotics Course Project. Implemented load cell sensing and mechanical design principles.",
     link: "https://github.com/isluder/Socket-sorting-robot-mece-444",
-    image: "https://raw.githubusercontent.com/isluder/Socket-sorting-robot-mece-444/main/preview.jpg",
-    technologies: ["Python", "OpenCV", "Robotics", "Arduino"]
+    image: "images/robot.png",
+    technologies: ["Python", "PlatformIO", "Robotics", "Marlin"]
   },
   { 
     title: "Laptop Market Analysis",
     description: "Conducted comprehensive analysis of laptop market trends, focusing on price-performance relationships and consumer preferences.",
     link: "https://github.com/isluder/Exploring-the-Market-of-Laptops-through-Pricing-and-Performance-Testing",
-    image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853",
+    image: "images/TDS_project.png",
     technologies: ["Data Analysis", "Python", "Pandas", "Visualization"]
   },
 ];
@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Test tube cursor effect
 let start = new Date().getTime();
+let testtubesEnabled = true;
 
 const originPosition = { x: 0, y: 0 };
 
@@ -151,3 +152,16 @@ const handleOnMove = e => {
 window.onmousemove = e => handleOnMove(e);
 window.ontouchmove = e => handleOnMove(e.touches[0]);
 document.body.onmouseleave = () => updateLastMousePosition(originPosition);
+
+// Toggle test tube effect
+document.addEventListener('DOMContentLoaded', function() {
+  const toggleButton = document.getElementById('toggle-testtube');
+  if (toggleButton) {
+    toggleButton.addEventListener('click', function() {
+      testtubesEnabled = !testtubesEnabled;
+      toggleButton.textContent = testtubesEnabled ? 'Disable Test Tubes' : 'Enable Test Tubes';
+      toggleButton.classList.toggle('btn-outline-light');
+      toggleButton.classList.toggle('btn-light');
+    });
+  }
+});
