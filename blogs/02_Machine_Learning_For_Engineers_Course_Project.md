@@ -21,7 +21,6 @@ mechanical performance based on conditioning parameters and to classify
 material types based on test results.
 
 
-In \[ \]:
 
     import numpy as np
     import pandas as pd
@@ -106,7 +105,6 @@ mechanisms.
 ### Loading Data from .csv file.
 
 
-In \[80\]:
 
     df = pd.read_csv('/Users/isluder/Library/CloudStorage/OneDrive-TheUniversityofAkron/0_Grad_School/0_1_PHD_Research/0_2_MTHP_Monitor_2025/HUMIDITY_DATA/Phase_I_April_25/Sample_Matrix_T_I_3.csv')
     df
@@ -141,7 +139,6 @@ individual sample names, the batch and serial number, and the date
 printed, test_temp, test_humid, and test name
 
 
-In \[81\]:
 
     # if 'Water_Cont' is < 0 set to 0
     df.loc[df['Water_Cont'] < 0, 'Water_Cont'] = 0
@@ -196,7 +193,6 @@ because they have different columns.
 (Note: Impact will be split off from the main dataframe later)
 
 
-In \[82\]:
 
     df_T = df[df['Type'] == 'T']
     df_T = df_T.drop(columns=['Type', 'I Max Force', 'Max Force Time', 'Final Velocity', 'I Energy Absorption'])
@@ -208,7 +204,6 @@ For a preview, Let\'s take a look at what conditioning does to our
 Modulus of Elasticity
 
 
-In \[83\]:
 
     sns.relplot(data=df_T, x='Water_Cont', y='Mod of Elast', hue='Material', style='Cond_DeCond', s=100, height=6, aspect=1.5)
     plt.ylabel('Modulus of Elasticity (MPa)')
@@ -242,7 +237,6 @@ a KDE plot, providing a continuous density estimate to visualize the
 distribution of that variable.
 
 
-In \[84\]:
 
     df_T_pair_plt = df_T.copy().drop(columns=['At_Test_M', 'MassCal', 'VoSA', 'SAoV', 'VolumeCalc', 'SurfaceAreaCalc', 'Density'])
     df_T_pair_plt.columns
@@ -256,7 +250,6 @@ In \[84\]:
           dtype='object')
 
 
-In \[85\]:
 
     # Create a combined column for Material and Cond_DeCond
     df_T_pair_plt['Material_Cond'] = df_T_pair_plt['Material'] + '_' + df_T_pair_plt['Cond_DeCond'].astype(str)
@@ -296,7 +289,6 @@ This pair-plot has many variables on it and is very hard to see. A
 correlation matrix is a better variant of this type of plot.
 
 
-In \[86\]:
 
     # Create a correlation heatmap
     corr = df_T_pair_plt.select_dtypes(include=[np.number]).corr()
@@ -343,7 +335,6 @@ later on.
 In this section we will get the Impact data from our original dataframe.
 
 
-In \[ \]:
 
     df_I = df[df['Type'] == 'I']
     df_I = df_I.drop(columns=['Type', 'T Energy Absorption', 'Mod of Elast', 'Yield Stress', 'Ultimate Stress', 'Ultimate Strain'])
@@ -354,7 +345,6 @@ Because of how large the image was, we can skip the pair plot for the
 impact (comment it out), and just view the correlation matrix.
 
 
-In \[ \]:
 
     df_I_pair_plt = df_I.copy().drop(columns=['Material', 'At_Test_M', 'SurfaceAreaCalc', 'VolumeCalc', 'Density', 'SAoV', 'VoSA', 'MassCal'])
 
@@ -363,7 +353,6 @@ In \[ \]:
 And here is the correlation matrix.
 
 
-In \[89\]:
 
     # Create a correlation heatmap
     corr = df_I_pair_plt.select_dtypes(include=[np.number]).corr()
@@ -391,7 +380,6 @@ need to drop some of the descriptive columns from our pair plot
 dataframe.
 
 
-In \[ \]:
 
     df_T_pair_plt.drop(columns=['Material', 'Material_Cond', 'color'], inplace=True)
 
@@ -403,7 +391,6 @@ predict all the tensile test features at the same time.
 Let\'s try out Energy Absorption first:
 
 
-In \[ \]:
 
     # Our Features that we will use to predict T Energy Absorption
     features = ['Lowest_M', 'Water_Cont', 'Estimated_Void_Content', 'Cond_DeCond', 'Onyx', 'Nylon_White', 'Paht']
@@ -455,7 +442,6 @@ common feature of our study.
 If we just removed those Nylon samples our accuracy can go up.
 
 
-In \[ \]:
 
     # Remove 'N' nylon sample rows from df_T_pair_plt
     df_T_pair_plt_woNylon = df_T_pair_plt[df_T_pair_plt['Nylon_White'] != 1]
@@ -498,7 +484,6 @@ samples.
 Let\'s try a different variable to predict, ultimate stress.
 
 
-In \[ \]:
 
     # Our Features that we will use to predict T Energy Absorption
     features = ['Lowest_M', 'Water_Cont', 'Estimated_Void_Content', 'Cond_DeCond', 'Onyx', 'Nylon_White', 'Paht']
@@ -539,7 +524,6 @@ Stress. Next, let\'s try to predict all the values. In this case, we
 will individually plot each feature.
 
 
-In \[94\]:
 
     # Our Features that we will use to predict
     features = ['Lowest_M', 'Water_Cont', 'Estimated_Void_Content', 'Cond_DeCond', 'Onyx', 'Nylon_White', 'Paht']
@@ -590,7 +574,6 @@ material is very slow. This typically results in more consistent testing
 results. Let\'s analyze feature importance.
 
 
-In \[95\]:
 
     # Feature importance from Linear Regression coefficients
     # Get coefficients for each target variable
@@ -651,7 +634,6 @@ printed materials see source \[1\].
 Let\'s try removing the estimated void content.
 
 
-In \[ \]:
 
     # Our Features that we will use to predict, remove estimated void content
     features = ['Lowest_M', 'Water_Cont', 'Cond_DeCond', 'Onyx', 'Nylon_White', 'Paht']
@@ -752,7 +734,6 @@ usually resulting in a lower score. Below we try to predict the impact
 features based on the same inputs from earlier.
 
 
-In \[99\]:
 
     # Our Features that we will use to predict
     features = ['Lowest_M', 'Water_Cont', 'Estimated_Void_Content', 'Cond_DeCond', 'Onyx', 'Nylon_White', 'Paht']
@@ -799,7 +780,6 @@ absorption seem like it should have a higher prediction but the
 variation is still high. Let\'s take a look at the feature importance.
 
 
-In \[100\]:
 
     # Feature importance from Linear Regression coefficients
     # Get coefficients for each target variable
@@ -843,7 +823,6 @@ before, for the same reasons as stated before. If we remove the void
 content, let\'s see what this reveals.
 
 
-In \[101\]:
 
     # Our Features that we will use to predict, removed estimated void content
     features = ['Lowest_M', 'Water_Cont', 'Cond_DeCond', 'Onyx', 'Nylon_White', 'Paht']

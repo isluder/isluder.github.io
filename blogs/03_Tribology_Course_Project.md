@@ -5,8 +5,8 @@
 This was a really fun project I did for a graduate level tribology course. While simple in nature, investigating the tribological performance of a galaxy fan bearing, the project was a favorite of mine because I spent a lot of time coding, and some analytical modeling.
 
 
-author: Isaac W. Sluder
-date: April 14, 2025\
+Author: Isaac W. Sluder\
+Date: April 14, 2025\
 Course: MECE 486/696\
 Professor: Dr. DellaCorte
 
@@ -125,7 +125,7 @@ Fans to Lasko Fans which is now commonly sold at Walmart, Home Depot and
 Target (and more).
 
 From the website
-([LINK](https://lasko.com/products/lasko-20-galaxy-box-fan-with-3-speeds-b20100-white?utm_source=chatgpt.com)),
+([LINK](https://lasko.com/products/lasko-20-galaxy-box-fan-with-3-speeds-b20100-white?)),
 Lasko give us some important information we can glean from our fan.
 First, the box fan has information stamped and printed on it. The
 website shows how to de-code some of this information (which is very
@@ -250,7 +250,7 @@ system. We will attempt to measure the fan speed with video analysis.
 The following method is a simple way to measure the speed of the fan
 using a video camera and a computer.
 
-In Figure [\[fig:camera frame\]](#fig:camera frame), half of the fan is in view. An orange dot
+In Figure [fig:camera frame](#fig:camera frame), half of the fan is in view. An orange dot
 has been placed on the fan blades to indicate the section we will be
 measuring. The box is the viewing angle of the camera with the green
 line signifying the center position. The goal is this, record slow
@@ -284,7 +284,7 @@ though recording only took about a minute and the video has around
 very least and would take weeks. Python's computer vision library called
 OpenCV will be utilized to analyze the videos. The first frame from the
 video is shown in figure
-[\[fig:first frame\]](#fig:first frame):
+[fig:first frame](#fig:first frame):
 
 However, a computer analyzing 28,000 of these clips would also take a
 long time therefore the video was cropped to only include the region of
@@ -292,11 +292,11 @@ interest as shown in the next figure. The next goal is deciding on how
 to detect whether the blade in question is in frame. This is why the
 orange dot was chosen as there are no other orange items in the vicinity
 of the frame and an orange Sharpe was available for use. As you see in
-Figure [\[fig:first frame\]](#fig:first frame), the orange dot has a large dynamic range
+Figure [fig:first frame](#fig:first frame), the orange dot has a large dynamic range
 of oranges, thus we must set color limits so the computer can detect
 whether these colors are in frame or not. The upper and lower limits of
 orange are depicted in Figure
-[\[fig:cropped\]](#fig:cropped).
+[fig:cropped](#fig:cropped).
 
 ![Chosen Color limits for HSV
 format](attachments/croppedframe.png)
@@ -309,13 +309,13 @@ in question with the color limits
 ([9](#fig:colorpalette)). The mask results in a black and white
 array that represent whether the chosen individual pixel is in the color
 range. This result can be seen in Figure
-([\[fig:mask on dot\]](#fig:mask on dot)).
+([fig:mask on dot](#fig:mask on dot)).
 
 However, this only gets us so far. As this specific frame is the first
 frame in the video and the orange spot will not look like this while
 spinning at 1250 rpms. The challenge comes in tuning the color spectrum
 and the amount of orange seen in each frame. See Figure
-([\[fig:mask on dot moving\]](#fig:mask on dot moving)) for a visual of the orange dot in
+([fig:mask on dot moving](#fig:mask on dot moving)) for a visual of the orange dot in
 motion.
 
 The result of tuning is a much higher orange color limit. Another
@@ -547,7 +547,7 @@ r3in ![image](attachments/concetration.png)
 In the methods sections the algorithm for determining the presence of an
 orange dot was shown, this algorithm produced a data set that could be
 viewed in a plot depicting the concentration detected over time. In
-figure [\[fig:concentration\]](#fig:concentration), three sections can clearly be seen.
+figure [fig:concentration](#fig:concentration), three sections can clearly be seen.
 These sections depict the three experiments run at each of the speed
 settings (High, mid, and low speeds). One can also see that the color
 concentration seems to dip in the middle for the high and mid. This is
@@ -588,7 +588,7 @@ technique as before. Since the disk seems to reach a steady-state speed
 higher than the fan blade, the resolution of the algorithm starts to
 break down, this can be seen as the stepping that seems to occur in
 figure
-[\[fig:diskvelocitydots\]](#fig:diskvelocitydots). To mitigate this, the speed was run
+[fig:diskvelocitydots](#fig:diskvelocitydots). To mitigate this, the speed was run
 through a smoothing function (window average of size 30). The peak
 steady-state velocity was recovered as roughly 1715 rpm. Only the max
 speed was done for the disk since the coast-down times were so
@@ -615,7 +615,7 @@ converts to about $0.01 Pa \cdot s$.
 
 The speed of the fan will be the max speed of 1025 rpms which was
 calculated in section 6 and can be seen in Figure
-[\[fig:concentration\]](#fig:concentration). To be used in the Summerfeld equation
+[fig:concentration](#fig:concentration). To be used in the Summerfeld equation
 the speed must be easily converted to $rev/s$. This is done easily:
 $$\omega = 1025 rpm / 60 s = 17.083 rev/s$$ The pressure can be
 estimated using the mass we calculated earlier and using the projected
@@ -786,7 +786,7 @@ graphs for each graphical calculation is on the next page and the code
 for each function is listed in the appendix.
 
 Firstly, at the top of the figure
-[\[fig:FanGraph\]](#fig:FanGraph), the decay functions for both the fan and the
+[fig:FanGraph](#fig:FanGraph), the decay functions for both the fan and the
 disk are displayed alongside the data collected from the computer vision
 program using the slow motion video. The fan speed curve fit was
 relatively successful. The blue dots scattered on the plot are the

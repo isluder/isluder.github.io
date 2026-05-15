@@ -81,7 +81,7 @@ async function loadBlogList() {
     
     container.innerHTML = '';
     
-    mdFiles.sort((a, b) => b.name.localeCompare(a.name));
+    mdFiles.sort((a, b) => a.name.localeCompare(b.name));
     
     for (const file of mdFiles) {
       let contentResponse;
@@ -94,7 +94,8 @@ async function loadBlogList() {
       
       const content = await contentResponse.text();
       
-      const title = file.name.replace('.md', '').replace(/_/g, ' ');
+      // Remove leading numbers (e.g. "01_") and replace underscores with spaces
+      const title = file.name.replace('.md', '').replace(/^\d+_/, '').replace(/_/g, ' ');
       // Remove images completely
       let cleanText = content.replace(/!\[.*?\]\(.*?\)/g, '');
       // Remove links completely
@@ -146,9 +147,33 @@ async function loadBlogPost() {
     const markdown = await response.text();
     
     if (window.marked) {
+      // Protect math blocks from marked by saving them and replacing with placeholders
+      let mathBlocks = [];
+      let processedMarkdown = markdown.replace(/\$\$([\s\S]*?)\$\$/g, (match) => {
+        mathBlocks.push(match);
+        return `%%%MATHBLOCK_${mathBlocks.length - 1}%%%`;
+      });
+      processedMarkdown = processedMarkdown.replace(/\$(.*?)\$/g, (match) => {
+        mathBlocks.push(match);
+        return `%%%MATHBLOCK_${mathBlocks.length - 1}%%%`;
+      });
+
       // Fix relative image paths manually before parsing to avoid marked.js API version issues
-      const processedMarkdown = markdown.replace(/!\[([^\]]*)\]\((?!http|\/)(.*?)\)/g, '![$1](blogs/$2)');
-      contentDiv.innerHTML = marked.parse(processedMarkdown);
+      processedMarkdown = processedMarkdown.replace(/!\[([^\]]*)\]\((?!http|\/)(.*?)\)/g, '![$1](blogs/$2)');
+      
+      let html = marked.parse(processedMarkdown);
+      
+      // Restore math blocks
+      html = html.replace(/%%%MATHBLOCK_(\d+)%%%/g, (match, i) => {
+        return mathBlocks[i];
+      });
+      
+      contentDiv.innerHTML = html;
+      
+      // Trigger MathJax to render
+      if (window.MathJax) {
+        MathJax.typesetPromise([contentDiv]).catch((err) => console.log('MathJax error:', err));
+      }
     } else {
       contentDiv.innerHTML = '<p class="text-danger">Error: Markdown parser not loaded.</p>';
     }
@@ -156,7 +181,8 @@ async function loadBlogPost() {
     loadingDiv.style.display = 'none';
     contentDiv.style.display = 'block';
     
-    const title = fileName.replace('.md', '').replace(/_/g, ' ');
+    // Remove leading numbers and underscores for the tab title
+    const title = fileName.replace('.md', '').replace(/^\d+_/, '').replace(/_/g, ' ');
     document.title = `${title} - Isaac Sluder`;
     
   } catch (error) {
