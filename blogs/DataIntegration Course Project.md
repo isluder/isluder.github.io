@@ -17,7 +17,7 @@ To solve this, the Mechanical Integrators team built CompCompData. Utilizing a P
 To replace the manual Excel pipeline, we established a streamlined, code-driven importation process that bridges the gap between raw data collection and database entry. The application is designed to ingest data metadata either individually or via a "Mass Import" Excel log.
 
 Under the hood, the importation engine (`database.py`) features a "Smart Path Resolver" (`resolve_file_info`). Instead of forcing researchers to manually link exact, absolute file paths—which easily break when folders are moved—the user only needs to provide the raw file name. The Python backend crawls the designated external `DATA_SOURCE` directory using `os.walk`, locates the corresponding `.csv` file, and automatically links the absolute path to the database entry. This ensures that the massive raw data files remain safely stored externally, while the database remains lightweight and perfectly mapped.
-!(Figure 1)[attachments/Pasted image 20260515141422.png]
+![Figure 1](attachments/Pasted_image_20260515141422.png)
 Figure 1 - Importing Meta-Data of single test result using Pyqt6 Interface
 
 ## 2. Data Integration
@@ -35,9 +35,9 @@ Our schema categorizes data across four primary levels of integration:
 ·       **S4 (The Hub):** The central `experimental_data` table that links file paths to all external keys, alongside three dynamic `Pivot Variables` to capture project-specific conditions (like varying impact energies or humidity).
 
 To make this highly normalized data accessible to the GUI, we programmed a SQLite View named `readable_lab_data`. This View automatically performs all necessary operations to flatten the relational data into a highly query-able format without duplicating stored data.
-!(Figure 2)[attachments/Pasted image 20260515141643.png]
+![Figure 2](attachments/Pasted_image_20260515141643.png)
 Figure 2 - Database Schema
-!(Figure 3)[attachments/Pasted image 20260515141650.png]
+![Figure 3](attachments/Pasted_image_20260515141650.png)
 Figure 3 - View of the meta-data with enforced schema (and un-enforced columns)
 
 ## 3. Data Processing
@@ -51,9 +51,9 @@ We developed an algorithm registry that maps database string values to actual Py
 ·       **Impact Extraction (Izod & Sandwich):** Employs `scipy.signal.savgol_filter` (Savitzky-Golay filter) to smooth noisy load cell data, allowing the algorithm to accurately identify peak contact forces and integrate the curve for total absorbed energy.
 
 By decoupling the raw data from the math, researchers can tweak extraction parameters (like gauge length or smoothing windows) directly in the UI and instantly re-process the data without altering the original files.
-!(Figure 4)[attachments/Pasted image 20260515141703.png]
+![Figure 4](attachments/Pasted_image_20260515141703.png)
 Figure 4 – Main Software backend showing SQLite (top), Python (bottom left), and QT (bottom right)
-!(Figure 5)[attachments/Pasted image 20260515141711.png]
+![Figure 5](attachments/Pasted_image_20260515141711.png)
 Figure 5 - Unsmoothed (top) vs smoothed (bottom)
 
 ## 4. Data Visualization
@@ -63,10 +63,10 @@ The frontend graphical user interface (GUI) was designed using the PyQt6 framewo
 The "Graphs" tab contains a multi-threaded architecture. When a user executes a query, an `ExtractionWorker` thread runs the Pandas data processing in the background, preventing the UI from freezing. Once processed, the data is handed to the `graph_builder.py` engine, which utilizes Plotly to generate interactive HTML charts displayed natively within the app via `QWebEngineView`.
 
 The "Customize" sub-tab dynamically morphs based on the selected algorithms. If a Bar Chart is selected, it extracts scalar metrics (like Peak Force) and aggregates them (Mean, Median) with automatically calculated standard deviation or standard error bars. If a Line Plot is selected, it intelligently downsamples curves exceeding 1,000 data points while strictly preserving minimum and maximum peak values to ensure the visual fidelity of the failure points is never compromised.
-!(Figure 6)[attachments/Pasted image 20260515141718.png]
+![Figure 6](attachments/Pasted_image_20260515141718.png)
 Figure 6 - Customizing Options, Group by "Material" shown.
 
-!(Figure 7)[attachments/Pasted image 20260515141725.png]
+![Figure 7](attachments/Pasted_image_20260515141725.png)
 Figure 7 - Barchart displaying error bars and group by material.
 
 ## Conclusion
