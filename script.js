@@ -51,142 +51,178 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-// Test tube cursor effect
-let start = new Date().getTime();
-let testtubesEnabled = true;
 
-const originPosition = { x: 0, y: 0 };
 
-const last = {
-  testtubeTimestamp: start,
-  testtubePosition: originPosition,
-  mousePosition: originPosition
-}
+// --- Blog Functionality ---
 
-const config = {
-  testtubeAnimationDuration: 1500,
-  minimumTimeBetweenTesttubes: 250,
-  minimumDistanceBetweenTesttubes: 75,
-  colors: ["249 146 253", "252 254 255"],
-  sizes: ["2.5rem", "2rem", "1.5rem"],
-  animations: ["fall-1", "fall-2", "fall-3"]
-}
+async function loadBlogList() {
+  const container = document.getElementById("blog-posts");
+  if (!container) return;
 
-let count = 0;
-  
-const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-const selectRandom = items => items[rand(0, items.length - 1)];
-const withUnit = (value, unit) => `${value}${unit}`;
-const px = value => withUnit(value, "px");
-const ms = value => withUnit(value, "ms");
+  container.innerHTML = '<div class="col-md-8 mx-auto text-center"><div class="spinner-border text-primary" role="status"></div><p>Loading posts...</p></div>';
 
-const calcDistance = (a, b) => {
-  const diffX = b.x - a.x;
-  const diffY = b.y - a.y;
-  return Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
-}
-
-const calcElapsedTime = (start, end) => end - start;
-
-const appendElement = element => document.body.appendChild(element);
-const removeElement = (element, delay) => setTimeout(() => {
-  if (element && element.parentNode) {
-    document.body.removeChild(element);
-  }
-}, delay);
-
-// Updated createTesttube function with brain emoji
-const createTesttube = position => {
-  const testtube = document.createElement("span");
-  const color = selectRandom(config.colors);
-  
-  // Use brain emoji 🧠
-  testtube.innerHTML = "🧪";
-  testtube.className = "test-tube";
-  
-  testtube.style.position = "fixed";
-  testtube.style.left = px(position.x);
-  testtube.style.top = px(position.y);
-  testtube.style.fontSize = selectRandom(config.sizes);
-  // testtube.style.color = `rgb(${color})`;
-  testtube.style.textShadow = `0px 0px 1.5rem rgb(${color} / 0.5)`;
-  testtube.style.animationName = config.animations[count++ % 3];
-  testtube.style.animationDuration = ms(config.testtubeAnimationDuration);
-  testtube.style.pointerEvents = "none";
-  testtube.style.zIndex = "9999";
-  
-  appendElement(testtube);
-  removeElement(testtube, config.testtubeAnimationDuration);
-}
-
-const updateLastTesttube = position => {
-  last.testtubeTimestamp = new Date().getTime();
-  last.testtubePosition = position;
-}
-
-const updateLastMousePosition = position => last.mousePosition = position;
-
-const adjustLastMousePosition = position => {
-  if(last.mousePosition.x === 0 && last.mousePosition.y === 0) {
-    last.mousePosition = position;
-  }
-};
-
-const handleOnMove = e => {
-  if (!testtubesEnabled) return;
-
-  const mousePosition = { x: e.clientX, y: e.clientY };
-
-  adjustLastMousePosition(mousePosition);
-
-  const now = new Date().getTime();
-  const hasMovedFarEnough = calcDistance(last.testtubePosition, mousePosition) >= config.minimumDistanceBetweenTesttubes;
-  const hasBeenLongEnough = calcElapsedTime(last.testtubeTimestamp, now) > config.minimumTimeBetweenTesttubes;
-
-  if(hasMovedFarEnough || hasBeenLongEnough) {
-    createTesttube(mousePosition);
-    updateLastTesttube(mousePosition);
-  }
-
-  updateLastMousePosition(mousePosition);
-}
-
-window.onmousemove = e => handleOnMove(e);
-window.ontouchmove = e => handleOnMove(e.touches[0]);
-document.body.onmouseleave = () => updateLastMousePosition(originPosition);
-
-// Toggle test tube effect with localStorage persistence
-document.addEventListener('DOMContentLoaded', function() {
-  const toggleButton = document.getElementById('toggle-testtube');
-  
-  // Load state from localStorage
-  const savedState = localStorage.getItem('testtubesEnabled');
-  if (savedState !== null) {
-    testtubesEnabled = JSON.parse(savedState);
-  }
-  
-  // Apply saved state to button
-  if (toggleButton) {
-    if (testtubesEnabled) {
-      toggleButton.classList.remove('inactive');
-      toggleButton.classList.add('active');
-    } else {
-      toggleButton.classList.remove('active');
-      toggleButton.classList.add('inactive');
+  try {
+    const response = await fetch(`https://api.github.com/repos/isluder/isluder.github.io/contents/blogs`);
+    if (!response.ok) {
+      if (response.status === 404) {
+        container.innerHTML = '<div class="col-md-8 mx-auto"><p class="text-center">No blog posts found yet. Check back soon!</p></div>';
+        return;
+      }
+      throw new Error('Failed to fetch from GitHub API');
     }
     
-    toggleButton.addEventListener('click', function() {
-      testtubesEnabled = !testtubesEnabled;
-      // Save state to localStorage
-      localStorage.setItem('testtubesEnabled', JSON.stringify(testtubesEnabled));
-      
-      if (testtubesEnabled) {
-        toggleButton.classList.remove('inactive');
-        toggleButton.classList.add('active');
-      } else {
-        toggleButton.classList.remove('active');
-        toggleButton.classList.add('inactive');
+    const files = await response.json();
+    const mdFiles = files.filter(f => f.name.endsWith('.md'));
+    
+    if (mdFiles.length === 0) {
+      container.innerHTML = '<div class="col-md-8 mx-auto"><p class="text-center">No blog posts found yet. Check back soon!</p></div>';
+      return;
+    }
+    
+    container.innerHTML = '';
+    
+    mdFiles.sort((a, b) => b.name.localeCompare(a.name));
+    
+    for (const file of mdFiles) {
+      let contentResponse;
+      try {
+        contentResponse = await fetch(`blogs/${file.name}`);
+      } catch (e) {
+        contentResponse = await fetch(file.download_url);
       }
-    });
+      
+      const content = await contentResponse.text();
+      
+      const title = file.name.replace('.md', '').replace(/_/g, ' ');
+      const cleanText = content.replace(/[#*`_\[\]()]/g, '').trim();
+      const words = cleanText.split(/\s+/);
+      const description = words.slice(0, 50).join(' ') + (words.length > 50 ? '...' : '');
+      
+      const col = document.createElement("div");
+      col.className = "col-md-8 mx-auto mb-4";
+      col.innerHTML = `
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h3 class="card-title">${title}</h3>
+            <p class="card-text text-muted">${description}</p>
+            <a href="post.html?file=${encodeURIComponent(file.name)}" class="btn btn-primary mt-2">Read Article</a>
+          </div>
+        </div>
+      `;
+      container.appendChild(col);
+    }
+  } catch (error) {
+    console.error('Error loading blogs:', error);
+    container.innerHTML = '<div class="col-md-8 mx-auto"><p class="text-center text-danger">Failed to load blog posts. Please ensure the blogs folder exists and try refreshing.</p></div>';
   }
+}
+
+async function loadBlogPost() {
+  const contentDiv = document.getElementById("post-content");
+  const loadingDiv = document.getElementById("post-loading");
+  if (!contentDiv) return;
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const fileName = urlParams.get('file');
+
+  if (!fileName) {
+    loadingDiv.style.display = 'none';
+    contentDiv.style.display = 'block';
+    contentDiv.innerHTML = '<p class="text-danger">No post specified.</p>';
+    return;
+  }
+
+  try {
+    const response = await fetch(`blogs/${fileName}`);
+    if (!response.ok) {
+      throw new Error('Post not found');
+    }
+    const markdown = await response.text();
+    
+    if (window.marked) {
+      const renderer = new marked.Renderer();
+      const originalImage = renderer.image.bind(renderer);
+      renderer.image = function(href, title, text) {
+        if (href && !href.startsWith('http') && !href.startsWith('/')) {
+          href = 'blogs/' + href;
+        }
+        return originalImage(href, title, text);
+      };
+      marked.setOptions({ renderer: renderer });
+      
+      contentDiv.innerHTML = marked.parse(markdown);
+    } else {
+      contentDiv.innerHTML = '<p class="text-danger">Error: Markdown parser not loaded.</p>';
+    }
+    
+    loadingDiv.style.display = 'none';
+    contentDiv.style.display = 'block';
+    
+    const title = fileName.replace('.md', '').replace(/_/g, ' ');
+    document.title = `${title} - Isaac Sluder`;
+    
+  } catch (error) {
+    console.error('Error loading post:', error);
+    loadingDiv.style.display = 'none';
+    contentDiv.style.display = 'block';
+    contentDiv.innerHTML = '<p class="text-danger">Failed to load the post. It may have been removed or renamed.</p>';
+  }
+}
+
+function loadNavbar() {
+  const navbarContainer = document.getElementById('navbar-container');
+  if (!navbarContainer) return;
+
+  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+
+  const navLinks = [
+    { name: 'About', url: 'index.html#about', match: 'index.html' },
+    { name: 'Projects', url: 'projects.html', match: 'projects.html' },
+    { name: 'Publications', url: 'publications.html', match: 'publications.html' },
+    { name: 'Service & Awards', url: 'awards.html', match: 'awards.html' },
+    { name: 'Blog', url: 'blog.html', match: ['blog.html', 'post.html'] },
+    { name: 'CV', url: 'cv.html', match: 'cv.html' },
+    { name: 'Contact', url: 'contact.html', match: 'contact.html' }
+  ];
+
+  let linksHTML = '';
+  navLinks.forEach(link => {
+    let isActive = false;
+    if (Array.isArray(link.match)) {
+      isActive = link.match.includes(currentPage);
+    } else if (link.match) {
+      if ((currentPage === '' || currentPage === '/') && link.match === 'index.html') {
+        isActive = true;
+      } else {
+        isActive = currentPage === link.match;
+      }
+    }
+
+    linksHTML += `
+            <li class="nav-item">
+              <a class="nav-link ${isActive ? 'active' : ''}" href="${link.url}">${link.name}</a>
+            </li>`;
+  });
+
+  navbarContainer.innerHTML = `
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top w-100">
+      <div class="container-fluid">
+        <a href="/" class="navbar-brand">Isaac Sluder</a>
+        <button aria-controls="basic-navbar-nav" type="button" aria-label="Toggle navigation" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+${linksHTML}
+          </ul>
+        </div>
+      </div>
+    </nav>
+  `;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  loadNavbar();
+  loadBlogList();
+  loadBlogPost();
 });
