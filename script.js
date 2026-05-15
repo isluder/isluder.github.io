@@ -145,17 +145,9 @@ async function loadBlogPost() {
     const markdown = await response.text();
     
     if (window.marked) {
-      const renderer = new marked.Renderer();
-      const originalImage = renderer.image.bind(renderer);
-      renderer.image = function(href, title, text) {
-        if (href && !href.startsWith('http') && !href.startsWith('/')) {
-          href = 'blogs/' + href;
-        }
-        return originalImage(href, title, text);
-      };
-      marked.setOptions({ renderer: renderer });
-      
-      contentDiv.innerHTML = marked.parse(markdown);
+      // Fix relative image paths manually before parsing to avoid marked.js API version issues
+      const processedMarkdown = markdown.replace(/!\[([^\]]*)\]\((?!http|\/)(.*?)\)/g, '![$1](blogs/$2)');
+      contentDiv.innerHTML = marked.parse(processedMarkdown);
     } else {
       contentDiv.innerHTML = '<p class="text-danger">Error: Markdown parser not loaded.</p>';
     }
