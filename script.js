@@ -94,8 +94,13 @@ async function loadBlogList() {
       const content = await contentResponse.text();
       
       const title = file.name.replace('.md', '').replace(/_/g, ' ');
-      const cleanText = content.replace(/[#*`_\[\]()]/g, '').trim();
-      const words = cleanText.split(/\s+/);
+      // Remove images completely
+      let cleanText = content.replace(/!\[.*?\]\(.*?\)/g, '');
+      // Remove links completely
+      cleanText = cleanText.replace(/\[.*?\]\(.*?\)/g, '');
+      // Remove markdown headings, bold, italic, code
+      cleanText = cleanText.replace(/[#*`_>]/g, '').trim();
+      const words = cleanText.split(/\s+/).filter(w => w.length > 0);
       const description = words.slice(0, 50).join(' ') + (words.length > 50 ? '...' : '');
       
       const col = document.createElement("div");
