@@ -86,7 +86,8 @@ async function loadBlogList() {
     for (const file of mdFiles) {
       let contentResponse;
       try {
-        contentResponse = await fetch(`blogs/${file.name}`);
+        contentResponse = await fetch(`blogs/${file.name}?t=${new Date().getTime()}`);
+        if (!contentResponse.ok) throw new Error();
       } catch (e) {
         contentResponse = await fetch(file.download_url);
       }
@@ -138,7 +139,7 @@ async function loadBlogPost() {
   }
 
   try {
-    const response = await fetch(`blogs/${fileName}`);
+    const response = await fetch(`blogs/${fileName}?t=${new Date().getTime()}`);
     if (!response.ok) {
       throw new Error('Post not found');
     }
