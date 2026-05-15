@@ -1,9 +1,6 @@
----
-lang: en
-title: ML4ENG_FINAL_PROJECT
-viewport: width=device-width, initial-scale=1.0
----
-# Note from the Author
+# Machine Learning for Engineering Course Project
+
+## Note from the Author
 
 This project was from a graduate level machine learning engineering course. It was very fun which is why it is here. I used some of my own data from my hygrothermal work. See published results tab. Although simple in nature, this project handles machine learning and aims to explain the results with respect to the physical nature of the data.
 

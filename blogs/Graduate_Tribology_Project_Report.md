@@ -1,19 +1,16 @@
----
-author:
-- Isaac W. Sluder
-date: |
-  April 14, 2025\
-  Course: MECE 486/696\
-  Professor: Dr. DellaCorte
-title: |
-  Graduate Tribology Project Report\
-  The Tribological Behavior of a Galaxy Box Fan
----
+# Tribology Course Project
 
 # Note from the Author
 
 This was a really fun project I did for a graduate level tribology course. While simple in nature, investigating the tribological performance of a galaxy fan bearing, the project was a favorite of mine because I spent a lot of time coding, and some analytical modeling.
 
+
+author: Isaac W. Sluder
+date: April 14, 2025\
+Course: MECE 486/696\
+Professor: Dr. DellaCorte
+
+# Graduate Tribology Project - The Tribological Behavior of a Galaxy Box Fan
 
 # Introduction
 
