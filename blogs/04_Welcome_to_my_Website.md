@@ -10,4 +10,4 @@ Check out this picture of my lab from the 2025 ASC Conference in Dayton, Ohio.
 
 ![Lab Photo](attachments/IMG_20251009_124304.jpg)
 
-- Isaac
+- Isaac Sluder
