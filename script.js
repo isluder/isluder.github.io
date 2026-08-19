@@ -1,17 +1,17 @@
 const projects = [
   { 
-    title: "Socket Sorting Robot",
-    description: "Developed a robotic system for automated socket sorting as part of the Robotics Course Project. Implemented load cell sensing and mechanical design principles.",
-    link: "https://github.com/isluder/Socket-sorting-robot-mece-444",
-    image: "images/robot.png",
-    technologies: ["Python", "PlatformIO", "Robotics", "Marlin"]
+    title: "Automated Polymer-Degradation Data Extraction",
+    description: "An end-to-end research pipeline that transforms unstructured journal articles into curated, machine-readable chemical and materials data. The same software supports a literature-grounded research assistant that can produce traceable reports, datasets, plots, and chemical structure diagrams.",
+    icon: "fas fa-database",
+    technologies: ["Python", "Gemini", "Knowledge Graphs", "GraphRAG", "KuzuDB", "SQLite"]
   },
   { 
-    title: "Laptop Market Analysis",
-    description: "Conducted comprehensive analysis of laptop market trends, focusing on price-performance relationships and consumer preferences.",
-    link: "https://github.com/isluder/Exploring-the-Market-of-Laptops-through-Pricing-and-Performance-Testing",
-    image: "images/TDS_project.png",
-    technologies: ["Data Analysis", "Python", "Pandas", "Visualization"]
+    title: "Hygrothermal Degradation of 3D-Printed Composites",
+    description: "Experimental research examining how moisture, temperature, and environmental exposure affect the tensile and impact performance of additively manufactured short-carbon-fiber composites.",
+    link: "https://doi.org/10.1016/j.compositesb.2026.114107",
+    linkLabel: "View Publication",
+    icon: "fas fa-microscope",
+    technologies: ["Composite Materials", "Additive Manufacturing", "Environmental Testing", "Statistical Analysis"]
   },
 ];
 
@@ -34,15 +34,18 @@ document.addEventListener('DOMContentLoaded', function() {
       const col = document.createElement("div");
       col.className = "col-md-6 mb-4";
       col.innerHTML = `
-        <div class="card h-100">
-          <img src="${p.image}" class="card-img-top" alt="${p.title}" style="height: 200px; object-fit: cover;">
+        <div class="card h-100 shadow-sm border-0 project-card">
+          <div class="project-image-placeholder" aria-label="Image placeholder for ${p.title}">
+            <i class="${p.icon}" aria-hidden="true"></i>
+            <span>Project image coming soon</span>
+          </div>
           <div class="card-body">
             <h5 class="card-title">${p.title}</h5>
             <p class="card-text">${p.description}</p>
             <div class="mb-3">
               ${p.technologies.map(tech => `<span class="badge bg-secondary me-2">${tech}</span>`).join('')}
             </div>
-            <a href="${p.link}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">View Project</a>
+            ${p.link ? `<a href="${p.link}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">${p.linkLabel || 'View Project'}</a>` : ''}
           </div>
         </div>
       `;
@@ -201,7 +204,7 @@ function loadNavbar() {
 
   const navLinks = [
     { name: 'About', url: 'index.html#about', match: 'index.html' },
-    { name: 'Projects', url: 'projects.html', match: 'projects.html' },
+    // Projects remains available at projects.html while the portfolio is being developed.
     { name: 'Publications', url: 'publications.html', match: 'publications.html' },
     { name: 'Service & Awards', url: 'awards.html', match: 'awards.html' },
     { name: 'Blog', url: 'blog.html', match: ['blog.html', 'post.html'] },
