@@ -1,9 +1,15 @@
 const projects = [
   { 
-    title: "Automated Polymer-Degradation Data Extraction",
-    description: "An end-to-end research pipeline that transforms unstructured journal articles into curated, machine-readable chemical and materials data. The same software supports a literature-grounded research assistant that can produce traceable reports, datasets, plots, and chemical structure diagrams.",
+    title: "Matract: Extraction Pipeline Testbed",
+    description: "A testbed for evaluating large language model extraction pipelines for polymer hygrothermal degradation knowledge graphs. This work compares model, prompt scope, and pipeline architecture choices. Manuscript in preparation.",
     icon: "fas fa-database",
-    technologies: ["Python", "Gemini", "Knowledge Graphs", "GraphRAG", "KuzuDB", "SQLite"]
+    technologies: ["Python", "Large Language Models", "Knowledge Graphs", "Pipeline Evaluation"]
+  },
+  {
+    title: "Polyimide & Bismaleimide Literature Data Curation",
+    description: "An end-to-end large language model pipeline developed during a summer 2026 AFRL internship to screen, extract, normalize, and organize hygrothermal degradation data from a 1,452-document literature corpus into a provenance-tracked Neo4j knowledge graph. The pipeline also supports literature-grounded reports, plots, and chemical structure diagrams. Manuscript in preparation.",
+    icon: "fas fa-flask",
+    technologies: ["Python", "Neo4j", "Cypher", "Materials Informatics", "Literature Data Extraction"]
   },
   { 
     title: "Hygrothermal Degradation of 3D-Printed Composites",
@@ -235,7 +241,7 @@ function loadNavbar() {
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top w-100">
       <div class="container-fluid">
         <a href="/" class="navbar-brand">Isaac Sluder</a>
-        <button aria-controls="basic-navbar-nav" type="button" aria-label="Toggle navigation" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button aria-controls="navbarNav" aria-expanded="false" type="button" aria-label="Toggle navigation" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
